@@ -1,15 +1,11 @@
 import * as React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import SearchAppBar from './components/SearchAppBar'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
 import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
