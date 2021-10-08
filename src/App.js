@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import SearchAppBar from './components/SearchAppBar'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Typography } from '@mui/material';
 
 import * as React from 'react';
 
@@ -9,6 +10,13 @@ export const ColorModeContext = React.createContext({ toggleColorMode: () => { }
 
 function App() {
   const [mode, setMode] = React.useState('light');
+  const [apiData, setApiData] = React.useState({});
+
+  React.useEffect(() => {
+    fetch('http://huluradio.herokuapp.com/radio')
+      .then(res => res.json()).then(setApiData)
+
+  }, [])
   const colorMode = React.useMemo(
     () => ({
       toggleColorMode: () => {
@@ -31,22 +39,11 @@ function App() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <div className="App">
-          <SearchAppBar />
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <p>
-              Edit <code>src/App.js</code> and save to reload.
-            </p>
-            <a
-              className="App-link"
-              href="https://reactjs.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn React
-            </a>
-          </header>
+        <SearchAppBar />
+        <div>
+          <Typography variant='body1'>
+            {JSON.stringify(apiData)}
+          </Typography>
         </div>
       </ThemeProvider>
     </ColorModeContext.Provider>
