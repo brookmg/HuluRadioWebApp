@@ -60,7 +60,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchAppBar() {
+export default function SearchAppBar(props) {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
 
@@ -91,6 +91,7 @@ export default function SearchAppBar() {
             </SearchIconWrapper>
             <StyledInputBase
               placeholder="Search…"
+              onChange={props.onSearchTextChange}
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
