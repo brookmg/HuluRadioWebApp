@@ -30,7 +30,7 @@ function App() {
   const audioPlayerEl = React.useRef(null);
 
   React.useEffect(() => {
-    fetch('http://huluradio.herokuapp.com/radio')
+    fetch('https://huluradio.herokuapp.com/radio')
       .then(res => res.json()).then(setApiData);
 
     if (audioPlayerEl && audioPlayerEl.current) {
