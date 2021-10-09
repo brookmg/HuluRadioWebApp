@@ -14,6 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import HuluRadioIcon from './huluradio.png'
+import ReactAudioPlayer from 'react-audio-player';
 
 export const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
 
@@ -23,13 +24,20 @@ function App() {
   const [searchString, setSearchString] = React.useState("");
   const [apiData, setApiData] = React.useState([]);
   const [selectedStation, setSelectedStation] = React.useState({
-    stationName: '_',
+    stationName: 'Pick a station',
   })
   const [isPlaying, setIsPlaying] = React.useState(false);
+  const audioPlayerEl = React.useRef(null);
 
   React.useEffect(() => {
     fetch('http://huluradio.herokuapp.com/radio')
-      .then(res => res.json()).then(setApiData)
+      .then(res => res.json()).then(setApiData);
+
+    if (audioPlayerEl && audioPlayerEl.current) {
+      const audio = audioPlayerEl.current.audioEl.current;
+      audio.onplaying = () => setIsPlaying(true)
+      audio.onpause = () => setIsPlaying(false)
+    }
 
   }, [])
   const colorMode = React.useMemo(
@@ -52,7 +60,7 @@ function App() {
   );
 
   const handleSearchTextChange = (ev) => setSearchString(ev.target.value)
-  const handleCardClick = (e) => console.log(e) || setSelectedStation(e)
+  const handleCardClick = (e) => setSelectedStation(e)
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -121,6 +129,11 @@ function App() {
               image={selectedStation.stationIcon || HuluRadioIcon}
               alt={selectedStation.stationDescription}
             />
+            <ReactAudioPlayer
+              src={selectedStation.stationStreamUrl}
+              ref={audioPlayerEl}
+              autoPlay
+            />
 
             <CardContent sx={{ flex: '1 0 auto', }}>
               <Typography variant="subtitle1" color="text.secondary" component="div">
@@ -129,14 +142,25 @@ function App() {
             </CardContent>
 
             <Box sx={{ paddingRight: 4, display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-              <IconButton aria-label="play/pause" onClick={() => {
-                setIsPlaying(!isPlaying)
-              }}>
+              <IconButton aria-label="play/pause">
                 {
                   isPlaying ?
-                    <PauseIcon sx={{ height: 38, width: 38 }} />
+                    <PauseIcon
+                      onClick={() => {
+                        if (audioPlayerEl && audioPlayerEl.current)
+                          audioPlayerEl.current.audioEl.current.pause();
+                      }}
+                      sx={{ height: 38, width: 38 }} />
                     :
-                    <PlayArrowIcon sx={{ height: 38, width: 38 }} />
+                    selectedStation.stationStreamUrl ?
+                      <PlayArrowIcon
+                        onClick={() => {
+                          if (audioPlayerEl && audioPlayerEl.current)
+                            audioPlayerEl.current.audioEl.current.play();
+                        }}
+                        sx={{ height: 38, width: 38 }} />
+                      :
+                      null
                 }
               </IconButton>
             </Box>
